@@ -1,0 +1,89 @@
+/* --- CSS: DESIGN & STYLE --- */
+
+/* Dark Mode Background */
+body {
+  background-color: #222;
+  color: #fff;
+  font-family: "Verdana", sans-serif;
+  text-align: center;
+  margin: 0;
+  display: flex; /* Makes the layout two columns */
+  height: 100vh;
+}
+
+/* LEFT SIDE: The Game Zone */
+.game-zone {
+  flex: 1; /* Takes up 50% of screen */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-right: 5px solid #444;
+}
+
+/* RIGHT SIDE: The Shop */
+.shop-zone {
+  flex: 1; /* Takes up 50% of screen */
+  background-color: #333;
+  padding: 20px;
+  overflow-y: auto; /* Allows scrolling if shop gets long */
+}
+
+/* Score Display */
+h1 {
+  margin: 0;
+  font-size: 50px;
+  color: #ffd700; /* Gold */
+}
+h2 {
+  color: #aaa;
+  margin-bottom: 30px;
+}
+
+/* Wattson The Lightbulb (The Clickable Object) */
+#wattson-img {
+  width: 200px;
+  cursor: pointer;
+  transition: transform 0.1s; /* Smooth animation */
+  border-radius: 50%;
+  background-color: #444;
+  padding: 20px;
+}
+
+/* The "Juice": Shrink when clicked */
+#wattson-img:active {
+  transform: scale(0.9);
+}
+
+/* Shop Buttons */
+.upgrade-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s;
+}
+
+.upgrade-btn:hover {
+  background-color: #555;
+}
+
+/* Disabled Button Style (When you can't afford it) */
+.upgrade-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #222;
+}
+
+.cost-text {
+  color: #ffd700;
+  font-weight: bold;
+}

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Power Up! with Wattson</title>
+    <!-- Link stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Recommended way to load JS to HTML is with defer attribute -->
+    <script src="game.js" defer></script>
+  </head>
+  <body>
+    <!-- LEFT COLUMN: The Game -->
+    <div class="game-zone">
+      <h2>POWER UP!</h3>
+
+      <!-- Score Display -->
+      <h1 id="score">0</h1>
+      <p>Watts Generated</p>
+
+      <!-- Stats -->
+      <p>Watts per second: <span id="wps-display">0</span></p>
+
+      <!-- The Main Clicker Image -->
+      <!-- We use a placeholder here. Students can swap src for a real image URL -->
+      <img id="wattson-img" src="assets/Wattson.svg" onclick="clickWattson()" />
+    </div>
+
+    <!-- RIGHT COLUMN: The Shop -->
+    <div class="shop-zone">
+      <h2>THE SHOP</h2>
+
+      <!-- Item 1: Click Power -->
+      <button
+        class="upgrade-btn"
+        id="btn-clicker"
+        onclick="buyUpgrade('clicker')"
+      >
+        <span>⚡️ Static Charge (+1/click)</span>
+        <span class="cost-text" id="cost-clicker">15 Watts</span>
+      </button>
+
+      <!-- Item 2: Auto Clicker (Small) -->
+      <button
+        class="upgrade-btn"
+        id="btn-potato"
+        onclick="buyUpgrade('potato')"
+      >
+        <span>🥔 Potato Battery (+1/sec)</span>
+        <span class="cost-text" id="cost-potato">50 Watts</span>
+      </button>
+
+      <!-- Item 3: Auto Clicker (Medium) -->
+      <button
+        class="upgrade-btn"
+        id="btn-hamster"
+        onclick="buyUpgrade('hamster')"
+      >
+        <span>🐹 Hamster Wheel (+5/sec)</span>
+        <span class="cost-text" id="cost-hamster">250 Watts</span>
+      </button>
+
+      <!-- Item 4: Auto Clicker (Large) -->
+      <button class="upgrade-btn" id="btn-solar" onclick="buyUpgrade('solar')">
+        <span>☀️ Solar Panel (+20/sec)</span>
+        <span class="cost-text" id="cost-solar">1000 Watts</span>
+      </button>
+
+      <button
+        onclick="resetGame()"
+        style="
+          margin-top: 50px;
+          background: red;
+          color: white;
+          border: none;
+          padding: 10px;
+        "
+      >
+        Reset Game
+      </button>
+    </div>
+  </body>
+</html>
