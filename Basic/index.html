@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Power Up! with Wattson</title>
     <!-- Link stylesheet -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <!-- Recommended way to load JS to HTML is with defer attribute -->
-    <script src="game.js" defer></script>
+    <script src="script.js" defer></script>
   </head>
   <body>
     <!-- LEFT COLUMN: The Game -->
     <div class="game-zone">
-      <h2>POWER UP!</h3>
+      <h2>POWER UP!</h2>
 
       <!-- Score Display -->
       <h1 id="score">0</h1>
@@ -36,6 +36,7 @@
         id="btn-clicker"
         onclick="buyUpgrade('clicker')"
       >
+        <span class="count" id="count-clicker"></span>
         <span>⚡️ Static Charge (+1/click)</span>
         <span class="cost-text" id="cost-clicker">15 Watts</span>
       </button>
@@ -46,6 +47,7 @@
         id="btn-potato"
         onclick="buyUpgrade('potato')"
       >
+        <span class="count" id="count-potato"></span>
         <span>🥔 Potato Battery (+1/sec)</span>
         <span class="cost-text" id="cost-potato">50 Watts</span>
       </button>
@@ -56,12 +58,14 @@
         id="btn-hamster"
         onclick="buyUpgrade('hamster')"
       >
+        <span class="count" id="count-hamster"></span>
         <span>🐹 Hamster Wheel (+5/sec)</span>
         <span class="cost-text" id="cost-hamster">250 Watts</span>
       </button>
 
       <!-- Item 4: Auto Clicker (Large) -->
       <button class="upgrade-btn" id="btn-solar" onclick="buyUpgrade('solar')">
+        <span class="count" id="count-solar"></span>
         <span>☀️ Solar Panel (+20/sec)</span>
         <span class="cost-text" id="cost-solar">1000 Watts</span>
       </button>

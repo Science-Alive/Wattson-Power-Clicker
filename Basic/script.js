@@ -109,6 +109,10 @@ function updateDisplay() {
   for (const key in upgrades) {
     const item = upgrades[key];
 
+    // Update Count Text
+    const countEl = document.getElementById(`count-${key}`);
+    countEl.innerText = `x ${item.count}`;
+
     // Update Cost Text
     const costEl = document.getElementById(`cost-${key}`);
     if (costEl) costEl.innerText = item.cost + " Watts";
