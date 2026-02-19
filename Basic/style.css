@@ -40,23 +40,21 @@ h2 {
   margin-bottom: 30px;
 }
 
-/* Wattson The Lightbulb (The Clickable Object) */
-#wattson-img {
+#click-btn {
+  background-image: url("assets/Wattson.svg");
+  background-position: center;
+  background-size: cover;
   width: 200px;
-  cursor: pointer;
-  transition: transform 0.1s; /* Smooth animation */
-  border-radius: 50%;
-  background-color: #444;
-  padding: 20px;
+  height: 200px;
+  border-radius: 128px;
 }
 
-/* The "Juice": Shrink when clicked */
-#wattson-img:active {
+#click-btn:active {
   transform: scale(0.9);
 }
 
 /* Shop Buttons */
-.upgrade-btn {
+.buy-btn {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -72,15 +70,8 @@ h2 {
   transition: background 0.2s;
 }
 
-.upgrade-btn:hover {
+.buy-btn:hover {
   background-color: #555;
-}
-
-/* Disabled Button Style (When you can't afford it) */
-.upgrade-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background-color: #222;
 }
 
 .cost-text {

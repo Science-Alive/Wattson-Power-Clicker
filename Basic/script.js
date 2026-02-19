@@ -2,164 +2,144 @@
 // 1. GAME STATE & CONFIGURATION
 // ==========================================
 
-let game = {
+const gameData = {
   score: 0,
   clickPower: 1,
-  wattsPerSecond: 0,
-  costMultiplier: 1.15, // Experiment with different multipliers
+  pointsPerSecond: 0,
+  lastTick: Date.now(),
+  autoClickers: [
+    {
+      id: "static",
+      baseCost: 15,
+      rate: 1,
+      count: 0,
+    },
+    {
+      id: "potato",
+      baseCost: 50,
+      rate: 5,
+      count: 0,
+    },
+    {
+      id: "hamster",
+      baseCost: 250,
+      rate: 10,
+      count: 0,
+    },
+    {
+      id: "solar",
+      baseCost: 1000,
+      rate: 25,
+      count: 0,
+    },
+    {
+      id: "nuclear",
+      baseCost: 3000,
+      rate: 50,
+      count: 0,
+    },
+  ],
 };
 
-// Item Configuration
-// Keys (clicker, potato, etc.) must match HTML IDs (btn-clicker, cost-clicker)
-const upgrades = {
-  clicker: {
-    name: "Cursor",
-    type: "click",
-    cost: 15,
-    power: 1,
-    count: 0,
-  },
-  potato: {
-    name: "Potato Battery",
-    type: "auto",
-    cost: 50,
-    power: 1,
-    count: 0,
-  },
-  hamster: {
-    name: "Hamster Wheel",
-    type: "auto",
-    cost: 250,
-    power: 5,
-    count: 0,
-  },
-  solar: {
-    name: "Solar Panel",
-    type: "auto",
-    cost: 1000,
-    power: 20,
-    count: 0,
-  },
-};
+/* =========================================
+   2. MAIN ENTRY POINT
+   This is where the game actually starts.
+   ========================================= */
+function main() {
+  console.log("Game Starting...");
 
-let gameInterval;
+  // A. Setup the Main Click Button
+  const clickBtn = document.getElementById("click-btn");
+  clickBtn.addEventListener("click", function () {
+    gameData.score += gameData.clickPower;
+    updateUI();
+  });
 
-// ==========================================
-// 2. CORE LOGIC
-// ==========================================
+  // B. Setup Shop Buttons (Loop through the data)
+  for (let i = 0; i < gameData.autoClickers.length; i++) {
+    let item = gameData.autoClickers[i];
+    let btn = document.getElementById("btn-" + item.id);
 
-// Initialize
-loadGame();
-
-// Game Loop (Runs once per second)
-gameInterval = setInterval(function () {
-  game.score += game.wattsPerSecond;
-  updateDisplay();
-  saveGame();
-}, 1000);
-
-// Recalculate totals based on inventory
-// This ensures math never drifts or gets buggy
-function recalculateRates() {
-  game.wattsPerSecond = 0;
-  game.clickPower = 1; // Base power
-
-  for (const key in upgrades) {
-    const item = upgrades[key];
-    if (item.type === "auto") {
-      game.wattsPerSecond += item.count * item.power;
-    } else if (item.type === "click") {
-      game.clickPower += item.count * item.power;
+    // Only attach listener if the button exists in HTML
+    if (btn) {
+      btn.addEventListener("click", function () {
+        console.log("Attempting to buy " + item.id);
+        buyAutoClicker(item);
+      });
     }
   }
+
+  // C. Initialize the Time and Start the Loop
+  lastTime = Date.now();
+  requestAnimationFrame(gameLoop);
 }
 
-// ==========================================
-// 3. ACTIONS
-// ==========================================
+/* =========================================
+   3. GAME ENGINE (The Loop)
+   ========================================= */
+function gameLoop() {
+  // 1. Calculate time passed (Delta Time)
+  let currentTime = Date.now();
+  let deltaTime = currentTime - gameData.lastTick;
+  gameData.lastTick = currentTime;
 
-function clickWattson() {
-  game.score += game.clickPower;
-  updateDisplay();
+  // 2. Add points (Convert ms to seconds by dividing by 1000)
+  gameData.score += gameData.pointsPerSecond * (deltaTime / 1000);
+
+  // 3. Update Screen
+  updateUI();
+
+  // 4. Loop
+  // This is a builtin method will generally match the display rate of the system monitor
+  requestAnimationFrame(gameLoop);
 }
 
-function buyUpgrade(itemId) {
-  const item = upgrades[itemId];
+/* =========================================
+   4. HELPER FUNCTIONS
+   ========================================= */
+function buyAutoClicker(item) {
+  let cost = Math.floor(item.baseCost * Math.pow(1.15, item.count));
 
-  if (item && game.score >= item.cost) {
-    game.score -= item.cost;
+  if (gameData.score >= cost) {
+    gameData.score -= cost;
     item.count++;
-    item.cost = Math.round(item.cost * game.costMultiplier);
+  }
 
-    recalculateRates();
-    updateDisplay();
+  calculatePPS();
+  updateUI();
+}
+
+function calculatePPS() {
+  let pps = 0;
+  for (let i = 0; i < gameData.autoClickers.length; i++) {
+    let item = gameData.autoClickers[i];
+    pps += item.count * item.rate;
+  }
+  gameData.pointsPerSecond = pps;
+}
+
+function updateUI() {
+  // Update Score
+  document.getElementById("score").innerText = Math.floor(gameData.score);
+
+  // Update PPS
+  document.getElementById("pps").innerText = gameData.pointsPerSecond;
+
+  // Update Shop Text
+  for (let i = 0; i < gameData.autoClickers.length; i++) {
+    let item = gameData.autoClickers[i];
+
+    // Recalculate cost dynamically
+    let cost = Math.floor(item.baseCost * Math.pow(1.15, item.count));
+
+    // Update HTML elements
+    let costSpan = document.getElementById("cost-" + item.id);
+    let countSpan = document.getElementById("count-" + item.id);
+
+    if (costSpan) costSpan.innerText = cost;
+    if (countSpan) countSpan.innerText = item.count;
   }
 }
 
-// ==========================================
-// 4. UI UPDATES
-// ==========================================
-
-function updateDisplay() {
-  // Update Score & WPS
-  document.getElementById("score").innerText = Math.floor(game.score);
-  document.getElementById("wps-display").innerText = game.wattsPerSecond;
-
-  // Loop through every item and update its specific HTML elements
-  for (const key in upgrades) {
-    const item = upgrades[key];
-
-    // Update Count Text
-    const countEl = document.getElementById(`count-${key}`);
-    countEl.innerText = `x ${item.count}`;
-
-    // Update Cost Text
-    const costEl = document.getElementById(`cost-${key}`);
-    if (costEl) costEl.innerText = item.cost + " Watts";
-
-    // Update Button Disabled State (Gray out if too expensive)
-    const btnEl = document.getElementById(`btn-${key}`);
-    if (btnEl) btnEl.disabled = game.score < item.cost;
-  }
-}
-
-// This is extra if participants want to learn how to save their games
-// ==========================================
-// 5. SAVE & LOAD
-// ==========================================
-
-function saveGame() {
-  const data = {
-    score: game.score,
-    upgrades: upgrades,
-  };
-  localStorage.setItem("wattsonSave", JSON.stringify(data));
-}
-
-function loadGame() {
-  const savedData = JSON.parse(localStorage.getItem("wattsonSave"));
-
-  if (savedData) {
-    if (savedData.score) game.score = savedData.score;
-
-    // Merge saved upgrades into current config
-    if (savedData.upgrades) {
-      for (const key in savedData.upgrades) {
-        if (upgrades[key]) {
-          upgrades[key].count = savedData.upgrades[key].count;
-          upgrades[key].cost = savedData.upgrades[key].cost;
-        }
-      }
-    }
-    recalculateRates();
-  }
-  updateDisplay();
-}
-
-function resetGame() {
-  if (confirm("Restart game from 0?")) {
-    clearInterval(gameInterval);
-    localStorage.removeItem("wattsonSave");
-    location.reload();
-  }
-}
+// START THE GAME
+main();
