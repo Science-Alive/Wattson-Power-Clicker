@@ -5,36 +5,35 @@
 const gameData = {
   score: 0,
   clickPower: 1,
-  pointsPerSecond: 0,
   lastTick: Date.now(),
   autoClickers: [
     {
       id: "static",
-      baseCost: 15,
+      cost: 15,
       rate: 1,
       count: 0,
     },
     {
       id: "potato",
-      baseCost: 50,
+      cost: 50,
       rate: 5,
       count: 0,
     },
     {
       id: "hamster",
-      baseCost: 250,
+      cost: 250,
       rate: 10,
       count: 0,
     },
     {
       id: "solar",
-      baseCost: 1000,
+      cost: 1000,
       rate: 25,
       count: 0,
     },
     {
       id: "nuclear",
-      baseCost: 3000,
+      cost: 3000,
       rate: 50,
       count: 0,
     },
@@ -57,14 +56,14 @@ function main() {
 
   // B. Setup Shop Buttons (Loop through the data)
   for (let i = 0; i < gameData.autoClickers.length; i++) {
-    let item = gameData.autoClickers[i];
-    let btn = document.getElementById("btn-" + item.id);
+    let autoClicker = gameData.autoClickers[i];
+    let btn = document.getElementById("btn-" + autoClicker.id);
 
     // Only attach listener if the button exists in HTML
     if (btn) {
       btn.addEventListener("click", function () {
-        console.log("Attempting to buy " + item.id);
-        buyAutoClicker(item);
+        console.log("Buying " + autoClicker.id);
+        buyAutoClicker(autoClicker);
       });
     }
   }
@@ -84,7 +83,7 @@ function gameLoop() {
   gameData.lastTick = currentTime;
 
   // 2. Add points (Convert ms to seconds by dividing by 1000)
-  gameData.score += gameData.pointsPerSecond * (deltaTime / 1000);
+  gameData.score += calculatePPS() * (deltaTime / 1000);
 
   // 3. Update Screen
   updateUI();
@@ -97,15 +96,13 @@ function gameLoop() {
 /* =========================================
    4. HELPER FUNCTIONS
    ========================================= */
-function buyAutoClicker(item) {
-  let cost = Math.floor(item.baseCost * Math.pow(1.15, item.count));
-
-  if (gameData.score >= cost) {
-    gameData.score -= cost;
-    item.count++;
+function buyAutoClicker(autoClicker) {
+  if (gameData.score >= autoClicker.cost) {
+    gameData.score -= autoClicker.cost;
+    autoClicker.count++;
+    autoClicker.cost = Math.ceil(autoClicker.cost * 1.2);
   }
 
-  calculatePPS();
   updateUI();
 }
 
@@ -115,7 +112,7 @@ function calculatePPS() {
     let item = gameData.autoClickers[i];
     pps += item.count * item.rate;
   }
-  gameData.pointsPerSecond = pps;
+  return pps;
 }
 
 function updateUI() {
@@ -123,21 +120,28 @@ function updateUI() {
   document.getElementById("score").innerText = Math.floor(gameData.score);
 
   // Update PPS
-  document.getElementById("pps").innerText = gameData.pointsPerSecond;
+  document.getElementById("pps").innerText = calculatePPS();
 
   // Update Shop Text
   for (let i = 0; i < gameData.autoClickers.length; i++) {
-    let item = gameData.autoClickers[i];
-
-    // Recalculate cost dynamically
-    let cost = Math.floor(item.baseCost * Math.pow(1.15, item.count));
+    let autoClicker = gameData.autoClickers[i];
 
     // Update HTML elements
-    let costSpan = document.getElementById("cost-" + item.id);
-    let countSpan = document.getElementById("count-" + item.id);
+    let costSpan = document.getElementById("cost-" + autoClicker.id);
+    let countSpan = document.getElementById("count-" + autoClicker.id);
 
-    if (costSpan) costSpan.innerText = cost;
-    if (countSpan) countSpan.innerText = item.count;
+    if (costSpan) costSpan.innerText = autoClicker.cost;
+    if (countSpan) countSpan.innerText = autoClicker.count;
+
+    // Check to buy auto clicker
+    let btn = document.getElementById("btn-" + autoClicker.id);
+    if (gameData.score >= autoClicker.cost) {
+      btn.disabled = false; // Enable
+      btn.style.opacity = "1.0";
+    } else {
+      btn.disabled = true; // Disable
+      btn.style.opacity = "0.5";
+    }
   }
 }
 
