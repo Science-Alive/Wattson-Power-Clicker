@@ -70,13 +70,12 @@ const gameData = {
    ========================================= */
 function main() {
   console.log("Game Starting...");
-  // E.Load previous game data
-  loadGame();
 
   // A. Setup the Main Click Button
   const clickBtn = document.getElementById("click-btn");
   clickBtn.addEventListener("click", function () {
     gameData.score += gameData.clickPower;
+    updateUI();
   });
 
   // B. Setup Shop Buttons (Loop through the data)
@@ -92,17 +91,6 @@ function main() {
       });
     }
   }
-
-  // Add to save the game every 15 seconds
-  setInterval(function () {
-    saveGame();
-    console.log("Auto-Saved!"); // Optional: Let us know it worked
-  }, 15000);
-
-  // Optional: Can also add an event listener to listen when tab closes to save the game before it closes
-  window.addEventListener("beforeunload", function () {
-    saveGame();
-  });
 
   // C. Initialize the Time and Start the Loop
   lastTime = Date.now();
@@ -138,6 +126,8 @@ function buyAutoClicker(autoClicker) {
     autoClicker.count++;
     autoClicker.cost = Math.ceil(autoClicker.cost * 1.2);
   }
+
+  updateUI();
 }
 
 function calculatePPS() {
@@ -177,20 +167,6 @@ function updateUI() {
       btn.style.opacity = "0.5";
     }
   }
-}
-
-function saveGame() {
-  const gameString = JSON.stringify(gameData);
-  localStorage.setItem("myClickerGame", gameString);
-}
-
-function loadGame() {
-  const savedGame = localStorage.getItem("myClickerGame");
-  if (savedGame === null) {
-    return;
-  }
-  const parsedGame = JSON.parse(savedGame);
-  Object.assign(gameData, parsedGame);
 }
 
 // START THE GAME

@@ -3,571 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Power Up! Final Fixed</title>
-    <style>
-      /* --- CSS: DESIGN & STYLE --- */
-      body {
-        background-color: #222;
-        color: #fff;
-        font-family: "Verdana", sans-serif;
-        text-align: center;
-        margin: 0;
-        display: flex;
-        height: 100vh;
-      }
-      .game-zone {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border-right: 5px solid #444;
-      }
-      .shop-zone {
-        flex: 1;
-        background-color: #333;
-        padding: 20px;
-        overflow-y: auto;
-      }
+    <title>Power Up! with Wattson</title>
+    <link rel="icon" type="image/x-icon" href="assets/flash.png" />
 
-      h1 {
-        margin: 0;
-        font-size: 50px;
-        color: #ffd700;
-      }
-      h3 {
-        margin: 5px 0 20px 0;
-        color: #888;
-        font-weight: normal;
-      }
-      h2 {
-        color: #aaa;
-        margin-top: 30px;
-        margin-bottom: 10px;
-        border-bottom: 1px solid #555;
-        padding-bottom: 5px;
-      }
-
-      #wattson-img {
-        width: 200px;
-        cursor: pointer;
-        transition: transform 0.1s;
-        border-radius: 50%;
-        background-color: #444;
-        padding: 20px;
-        margin-bottom: 20px;
-      }
-      #wattson-img:active {
-        transform: scale(0.9);
-      }
-
-      /* Buttons */
-      .upgrade-btn {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        background-color: #444;
-        color: white;
-        border: none;
-        padding: 15px;
-        margin-bottom: 10px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background 0.2s;
-        text-align: left;
-      }
-      .upgrade-btn:hover {
-        background-color: #555;
-      }
-      .upgrade-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        background-color: #222;
-      }
-
-      .btn-left {
-        display: flex;
-        flex-direction: column;
-      }
-      .btn-right {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-end;
-        text-align: right;
-      }
-
-      .item-name {
-        font-weight: bold;
-        font-size: 16px;
-      }
-      .item-cost {
-        color: #ffd700;
-        font-size: 14px;
-        margin-top: 4px;
-      }
-      .item-stats {
-        font-size: 13px;
-        color: #4cd137;
-        margin-bottom: 4px;
-      }
-      .item-percent {
-        font-size: 11px;
-        color: #aaa;
-      }
-
-      /* Tech Buttons */
-      .tech-btn {
-        background-color: #2a4d69;
-        margin-bottom: 10px;
-        width: 100%;
-        padding: 15px;
-        border-radius: 8px;
-        border: none;
-        color: white;
-        cursor: pointer;
-        font-size: 16px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .tech-btn:hover {
-        background-color: #3b6e96;
-      }
-      .tech-btn:disabled {
-        opacity: 0.4;
-        cursor: not-allowed;
-        background-color: #1a3042;
-      }
-      .tech-btn.tech-purchased {
-        background-color: #2ecc71;
-        opacity: 1;
-        cursor: default;
-      }
-
-      .mystery-text {
-        color: #888;
-        letter-spacing: 2px;
-      }
-    </style>
+    <!-- Link stylesheet -->
+    <link rel="stylesheet" href="style.css" />
+    <!-- Recommended way to load JS to HTML is with defer attribute -->
+    <script src="script.js" defer></script>
   </head>
   <body>
     <!-- LEFT COLUMN: The Game -->
     <div class="game-zone">
-      <h3>POWER UP!</h3>
+      <h2>POWER UP!</h2>
+
+      <!-- Score Display -->
       <h1 id="score">0</h1>
-      <p>Current Watts</p>
-      <h3 id="lifetime-display">Lifetime Generated: 0</h3>
-      <p>Watts per second: <span id="wps-display">0</span></p>
-      <img
-        id="wattson-img"
-        src="https://placehold.co/200x200/orange/white?text=Power"
-        onclick="clickWattson()"
-      />
+      <p>Watts Generated</p>
+
+      <!-- Stats -->
+      <p>Watts per second: <span id="pps">0</span></p>
+
+      <!-- The Main Clicker Button -->
+      <button id="click-btn"></button>
     </div>
 
     <!-- RIGHT COLUMN: The Shop -->
     <div class="shop-zone">
-      <h2>POWER GENERATORS</h2>
+      <h2>THE SHOP</h2>
 
-      <!-- CLICKER -->
-      <button
-        class="upgrade-btn"
-        id="btn-clicker"
-        onclick="buyGenerator('clicker')"
-      >
-        <div class="btn-left">
-          <span class="item-name" id="name-clicker">⚡ Static Charge</span>
-          <span class="item-cost" id="cost-clicker">15 Watts</span>
-        </div>
-        <div class="btn-right">
-          <span class="item-stats" id="stats-clicker">+1 Click Power</span>
-          <span class="item-percent" id="percent-clicker">Active</span>
-        </div>
+      <button class="buy-btn" id="btn-static">
+        <span class="count" id="count-static"></span>
+        <span>⚡️ Static Charge (+1/sec)</span>
+        <span class="cost-text" id="cost-static"></span>
       </button>
 
-      <!-- POTATO -->
-      <button
-        class="upgrade-btn"
-        id="btn-potato"
-        onclick="buyGenerator('potato')"
-      >
-        <div class="btn-left">
-          <span class="item-name" id="name-potato">🥔 Potato Battery</span>
-          <span class="item-cost" id="cost-potato">50 Watts</span>
-        </div>
-        <div class="btn-right">
-          <span class="item-stats" id="stats-potato">0/sec</span>
-          <span class="item-percent" id="percent-potato">0% of total</span>
-        </div>
+      <button class="buy-btn" id="btn-potato">
+        <span class="count" id="count-potato"></span>
+        <span>🥔 Potato Battery (+5/sec)</span>
+        <span class="cost-text" id="cost-potato"></span>
       </button>
 
-      <!-- HAMSTER -->
-      <button
-        class="upgrade-btn"
-        id="btn-hamster"
-        onclick="buyGenerator('hamster')"
-      >
-        <div class="btn-left">
-          <span class="item-name" id="name-hamster">???</span>
-          <span class="item-cost" id="cost-hamster">???</span>
-        </div>
-        <div class="btn-right">
-          <span class="item-stats" id="stats-hamster">???</span>
-          <span class="item-percent" id="percent-hamster">???</span>
-        </div>
+      <button class="buy-btn" id="btn-hamster">
+        <span class="count" id="count-hamster"></span>
+        <span>🐹 Hamster Wheel (+10/sec)</span>
+        <span class="cost-text" id="cost-hamster"></span>
       </button>
 
-      <!-- SOLAR -->
-      <button
-        class="upgrade-btn"
-        id="btn-solar"
-        onclick="buyGenerator('solar')"
-      >
-        <div class="btn-left">
-          <span class="item-name" id="name-solar">???</span>
-          <span class="item-cost" id="cost-solar">???</span>
-        </div>
-        <div class="btn-right">
-          <span class="item-stats" id="stats-solar">???</span>
-          <span class="item-percent" id="percent-solar">???</span>
-        </div>
+      <button class="buy-btn" id="btn-solar">
+        <span class="count" id="count-solar"></span>
+        <span>☀️ Solar Panel (+20/sec)</span>
+        <span class="cost-text" id="cost-solar"></span>
       </button>
 
-      <h2>TECH LAB</h2>
-
-      <!-- Tech 1 -->
-      <button
-        class="tech-btn"
-        id="btn-tech-potato"
-        onclick="buyTech('bakedPotato')"
-        style="display: none"
-      >
-        <div class="btn-left">
-          <span class="item-name">🔥 Baked Potatoes</span>
-          <span class="item-cost" id="cost-tech-potato">500 Watts</span>
-        </div>
-        <div class="btn-right">
-          <span class="item-stats">x2 Potato Power</span>
-        </div>
+      <button class="buy-btn" id="btn-nuclear">
+        <span class="count" id="count-nuclear"></span>
+        <span>☢️ Nuclear Plant (+50/sec)</span>
+        <span class="cost-text" id="cost-nuclear"></span>
       </button>
 
-      <!-- Tech 2 -->
-      <button
-        class="tech-btn"
-        id="btn-tech-hamster"
-        onclick="buyTech('hamsterSerum')"
-        style="display: none"
-      >
-        <div class="btn-left">
-          <span class="item-name">🧪 Hamster Serum</span>
-          <span class="item-cost" id="cost-tech-hamster">2500 Watts</span>
-        </div>
-        <div class="btn-right">
-          <span class="item-stats">x2 Hamster Speed</span>
-        </div>
+      <button class="buy-btn" id="btn-volcano">
+        <span class="count" id="count-volcano"></span>
+        <span>🌋 Volcano Plug (+100/sec)</span>
+        <span class="cost-text" id="cost-volcano"></span>
       </button>
 
-      <button
-        onclick="resetGame()"
-        style="
-          margin-top: 50px;
-          background: red;
-          color: white;
-          border: none;
-          padding: 10px;
-        "
-      >
-        Reset Game (Fixes Bugs)
+      <button class="buy-btn" id="btn-disco">
+        <span class="count" id="count-disco"></span>
+        <span>💫 Orbital Disco Ball Array (+250/sec)</span>
+        <span class="cost-text" id="cost-disco"></span>
+      </button>
+
+      <button class="buy-btn" id="btn-flash">
+        <span class="count" id="count-flash"></span>
+        <span>🏃 The Flash on Cosmic Treadmill (+750/sec)</span>
+        <span class="cost-text" id="cost-flash"></span>
+      </button>
+
+      <button class="buy-btn" id="btn-bang">
+        <span class="count" id="count-bang"></span>
+        <span>💥 Big Bang Dynamo (+1500/sec)</span>
+        <span class="cost-text" id="cost-bang"></span>
       </button>
     </div>
-
-    <script>
-      /* --- JAVASCRIPT --- */
-      let score = 0;
-      let lifetime = 0;
-      let wattsPerSecond = 0;
-      let gameInterval;
-
-      // 1. DATA OBJECTS
-      // These are the "Defaults" if no save file exists
-      let generators = {
-        clicker: {
-          name: "⚡ Static Charge",
-          cost: 15,
-          count: 1,
-          basePower: 1,
-          type: "click",
-          currentOutput: 0,
-        },
-        potato: {
-          name: "🥔 Potato Battery",
-          cost: 50,
-          count: 0,
-          basePower: 1,
-          type: "auto",
-          currentOutput: 0,
-        },
-        hamster: {
-          name: "🐹 Hamster Wheel",
-          cost: 250,
-          count: 0,
-          basePower: 5,
-          type: "auto",
-          currentOutput: 0,
-        },
-        solar: {
-          name: "☀️ Solar Panel",
-          cost: 1000,
-          count: 0,
-          basePower: 20,
-          type: "auto",
-          currentOutput: 0,
-        },
-      };
-
-      let tech = {
-        bakedPotato: {
-          cost: 500,
-          owned: false,
-          multiplier: 2,
-          target: "potato",
-        },
-        hamsterSerum: {
-          cost: 2500,
-          owned: false,
-          multiplier: 2,
-          target: "hamster",
-        },
-      };
-
-      // 2. START THE GAME
-      loadGame();
-
-      gameInterval = setInterval(function () {
-        // "Number()" fixes any issues where text strings got into the math
-        score += Number(wattsPerSecond);
-        lifetime += Number(wattsPerSecond);
-        updateDisplay();
-        saveGame();
-      }, 1000);
-
-      // 3. MATH LOGIC
-      function recalculateRates() {
-        wattsPerSecond = 0;
-
-        for (let key in generators) {
-          let gen = generators[key];
-
-          // Calculate Tech Multiplier
-          let multiplier = 1;
-          for (let tKey in tech) {
-            let t = tech[tKey];
-            if (t.target === key && t.owned) {
-              multiplier *= t.multiplier;
-            }
-          }
-
-          // Calculate Output
-          gen.currentOutput = gen.count * gen.basePower * multiplier;
-
-          // Add to Total (Only if it's an 'auto' generator)
-          if (gen.type === "auto") {
-            wattsPerSecond += gen.currentOutput;
-          }
-        }
-      }
-
-      function clickWattson() {
-        let power = generators.clicker.count * generators.clicker.basePower;
-        score += power;
-        lifetime += power;
-        updateDisplay();
-      }
-
-      function buyGenerator(type) {
-        let gen = generators[type];
-        if (score >= gen.cost) {
-          score -= gen.cost;
-          gen.count++;
-
-          let factor = type === "clicker" ? 2 : 1.5;
-          gen.cost = Math.round(gen.cost * factor);
-
-          recalculateRates();
-          updateDisplay();
-        }
-      }
-
-      function buyTech(techName) {
-        let t = tech[techName];
-        if (score >= t.cost && !t.owned) {
-          score -= t.cost;
-          t.owned = true;
-          recalculateRates();
-          updateDisplay();
-        }
-      }
-
-      // --- HELPERS ---
-      function getPercent(part, total) {
-        if (total === 0) return 0;
-        return Math.round((part / total) * 100);
-      }
-
-      // HELPER: Formats numbers into kW, MW, GW
-      function formatNumber(num) {
-        if (num >= 1000000000) {
-          return (num / 1000000000).toFixed(2) + " GW";
-        } else if (num >= 1000000) {
-          return (num / 1000000).toFixed(2) + " MW";
-        } else if (num >= 1000) {
-          return (num / 1000).toFixed(1) + " kW";
-        } else {
-          // If it's small, just show the number (Math.floor removes decimals)
-          return Math.floor(num);
-        }
-      }
-
-      function updateGeneratorUI(id, isUnlocked) {
-        let gen = generators[id];
-        let btn = document.getElementById("btn-" + id);
-        let nameEl = document.getElementById("name-" + id);
-        let costEl = document.getElementById("cost-" + id);
-        let statsEl = document.getElementById("stats-" + id);
-        let percentEl = document.getElementById("percent-" + id);
-
-        if (isUnlocked) {
-          nameEl.innerText = gen.name + " (x" + gen.count + ")";
-          nameEl.className = "item-name";
-
-          let formattedCost = formatNumber(gen.cost);
-          if (gen.cost < 1000) {
-            formattedCost += " Watts";
-          }
-          costEl.innerText = formattedCost;
-
-          if (gen.type === "click") {
-            statsEl.innerText = "+" + gen.count * gen.basePower + "/click";
-            percentEl.innerText = "Active";
-          } else {
-            statsEl.innerText = "+" + gen.currentOutput + "/sec";
-            percentEl.innerText =
-              getPercent(gen.currentOutput, wattsPerSecond) + "% of total";
-          }
-
-          btn.disabled = score < gen.cost;
-        } else {
-          nameEl.innerText = "???";
-          nameEl.className = "item-name mystery-text";
-          costEl.innerText = "???";
-          statsEl.innerText = "???";
-          percentEl.innerText = "";
-          btn.disabled = true;
-        }
-      }
-
-      function updateTechUI(id, techObj, isVisible) {
-        let btn = document.getElementById("btn-tech-" + id);
-        let costEl = document.getElementById("cost-tech-" + id);
-
-        if (techObj.owned) {
-          costEl.innerText = "Purchased";
-          btn.className = "tech-btn tech-purchased";
-          btn.disabled = true;
-          btn.style.display = "flex";
-        } else {
-          costEl.innerText = techObj.cost + " Watts";
-          let formattedCost = formatNumber(techObj.cost);
-          if (techObj.cost < 1000) {
-            formattedCost += " Watts";
-          }
-          costEl.innerText = formattedCost;
-          btn.className = "tech-btn";
-
-          if (isVisible) {
-            btn.style.display = "flex";
-            btn.disabled = score < techObj.cost;
-          } else {
-            btn.style.display = "none";
-          }
-        }
-      }
-
-      function updateDisplay() {
-        document.getElementById("score").innerText = Math.floor(score);
-        document.getElementById("lifetime-display").innerText =
-          "Lifetime Generated: " + Math.floor(lifetime);
-        document.getElementById("wps-display").innerText = formatNumber(
-          Number(wattsPerSecond),
-        );
-
-        // Updates
-        updateGeneratorUI("clicker", true);
-        updateGeneratorUI("potato", true);
-        // Safe checking logic (?.) prevents crashes if data is missing
-        updateGeneratorUI("hamster", generators.potato?.count > 0);
-        updateGeneratorUI("solar", generators.hamster?.count > 0);
-
-        updateTechUI("potato", tech.bakedPotato, generators.potato?.count > 0);
-        updateTechUI(
-          "hamster",
-          tech.hamsterSerum,
-          generators.hamster?.count > 0,
-        );
-      }
-
-      function saveGame() {
-        let gameSave = {
-          score: score,
-          lifetime: lifetime,
-          generators: generators,
-          tech: tech,
-        };
-        localStorage.setItem("powerSave", JSON.stringify(gameSave));
-      }
-
-      function loadGame() {
-        let savedGame = JSON.parse(localStorage.getItem("powerSave"));
-
-        // If we have a valid save, load it carefully
-        if (savedGame && savedGame.generators) {
-          // "Number()" ensures we don't load "100" as text, which breaks math
-          score = Number(savedGame.score);
-          lifetime = Number(savedGame.lifetime || 0);
-
-          for (let key in savedGame.generators) {
-            if (generators[key]) {
-              // Load Count and Cost safely
-              generators[key].count = Number(savedGame.generators[key].count);
-              generators[key].cost = Number(savedGame.generators[key].cost);
-            }
-          }
-
-          if (savedGame.tech) {
-            for (let key in savedGame.tech) {
-              if (tech[key]) {
-                tech[key].owned = savedGame.tech[key].owned;
-              }
-            }
-          }
-        }
-        // If save is missing or corrupted, we just use defaults (defined at top)
-
-        recalculateRates();
-        updateDisplay();
-      }
-
-      function resetGame() {
-        if (
-          confirm("Are you sure? This will delete your save and fix any bugs.")
-        ) {
-          clearInterval(gameInterval);
-          localStorage.removeItem("powerSave");
-          location.reload();
-        }
-      }
-    </script>
   </body>
 </html>

@@ -24,9 +24,6 @@ body {
 /* RIGHT SIDE: The Shop */
 .shop-zone {
   flex: 1; /* Takes up 50% of screen */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   background-color: #333;
   padding: 20px;
   overflow-y: auto; /* Allows scrolling if shop gets long */
