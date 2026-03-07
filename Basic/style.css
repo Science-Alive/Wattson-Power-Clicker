@@ -45,6 +45,7 @@ h2 {
 
 #click-btn {
   background-image: url("assets/Wattson.svg");
+  /* background-image: url("assets/smiley.png"); */
   background-position: center;
   background-size: cover;
   width: 200px;

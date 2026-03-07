@@ -68,6 +68,11 @@ const gameData = {
    2. MAIN ENTRY POINT
    This is where the game actually starts.
    ========================================= */
+
+function addToScore() {
+  gameData.score += 1;
+}
+
 function main() {
   console.log("Game Starting...");
   // E.Load previous game data
@@ -75,9 +80,7 @@ function main() {
 
   // A. Setup the Main Click Button
   const clickBtn = document.getElementById("click-btn");
-  clickBtn.addEventListener("click", function () {
-    gameData.score += gameData.clickPower;
-  });
+  clickBtn.addEventListener("click", addToScore);
 
   // B. Setup Shop Buttons (Loop through the data)
   for (let i = 0; i < gameData.autoClickers.length; i++) {
@@ -98,11 +101,6 @@ function main() {
     saveGame();
     console.log("Auto-Saved!"); // Optional: Let us know it worked
   }, 15000);
-
-  // Optional: Can also add an event listener to listen when tab closes to save the game before it closes
-  window.addEventListener("beforeunload", function () {
-    saveGame();
-  });
 
   // C. Initialize the Time and Start the Loop
   lastTime = Date.now();
