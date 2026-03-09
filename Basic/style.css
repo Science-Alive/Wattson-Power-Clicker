@@ -1,5 +1,9 @@
 /* --- CSS: DESIGN & STYLE --- */
 
+* {
+  box-sizing: border-box;
+}
+
 /* Dark Mode Background */
 body {
   background-color: #222;

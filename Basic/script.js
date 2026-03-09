@@ -8,55 +8,49 @@ const gameData = {
   lastTick: Date.now(),
   autoClickers: [
     {
-      id: "static",
+      id: "auto1",
       cost: 15,
       rate: 1,
       count: 0,
     },
     {
-      id: "potato",
+      id: "auto2",
       cost: 50,
       rate: 5,
       count: 0,
     },
     {
-      id: "hamster",
+      id: "auto3",
       cost: 250,
       rate: 10,
       count: 0,
     },
     {
-      id: "solar",
+      id: "auto4",
       cost: 1000,
       rate: 25,
       count: 0,
     },
     {
-      id: "nuclear",
+      id: "auto5",
       cost: 3000,
       rate: 50,
       count: 0,
     },
     {
-      id: "volcano",
+      id: "auto6",
       cost: 5000,
       rate: 100,
       count: 0,
     },
     {
-      id: "disco",
+      id: "auto7",
       cost: 10000,
       rate: 250,
       count: 0,
     },
     {
-      id: "flash",
-      cost: 20000,
-      rate: 750,
-      count: 0,
-    },
-    {
-      id: "bang",
+      id: "auto8",
       cost: 45000,
       rate: 1500,
       count: 0,
@@ -96,11 +90,8 @@ function main() {
     }
   }
 
-  // Add to save the game every 15 seconds
-  setInterval(function () {
-    saveGame();
-    console.log("Auto-Saved!"); // Optional: Let us know it worked
-  }, 15000);
+  // Add to save the game every 10 seconds
+  setInterval(saveGame, 10000);
 
   // C. Initialize the Time and Start the Loop
   lastTime = Date.now();
@@ -180,6 +171,7 @@ function updateUI() {
 function saveGame() {
   const gameString = JSON.stringify(gameData);
   localStorage.setItem("myClickerGame", gameString);
+  console.log("Game Saved!");
 }
 
 function loadGame() {
